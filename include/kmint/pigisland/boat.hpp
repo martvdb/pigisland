@@ -24,6 +24,9 @@ private:
 	delta_time t_passed_{};
 	// weet hoe de koe getekend moet worden
 	play::image_drawable drawable_;
+	int paintDamage_ = 0;
+	map::map_graph &graph_;
+	int mooringPlace;
 };
 
 } // namespace pigisland
