@@ -5,6 +5,11 @@
 #include "kmint/play.hpp"
 #include "kmint/primitives.hpp"
 #include "kmint/pigisland/dock.hpp"
+#include "kmint/pigisland/node_algorithm.hpp"
+#include "kmint/pigisland/resources.hpp"
+#include "kmint/random.hpp"
+#include "kmint/pigisland/Aster.hpp"
+#include "kmint/pigisland/pig.hpp"
 
 namespace kmint {
 namespace pigisland {
@@ -19,7 +24,7 @@ public:
 	bool incorporeal() const override { return false; }
 	// geeft de lengte van een zijde van de collision box van deze actor terug.
 	// Belangrijk voor collision detection
-	scalar collision_range() const override { return 16.0; }
+	scalar collision_range() const override { return 32.0; }
 	void repair(int amountOfRepairPoints);
 private:
 	// hoeveel tijd is verstreken sinds de laatste beweging

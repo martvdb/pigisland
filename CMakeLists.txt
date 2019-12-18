@@ -19,7 +19,8 @@ add_executable(pigisland
   src/kmint/pigisland/boat.cpp
   src/kmint/pigisland/pig.cpp
   src/kmint/pigisland/dock.cpp
-  src/kmint/pigisland/Aster.cpp)
+  src/kmint/pigisland/Aster.cpp
+  src/kmint/pigisland/SteeringBehaviors.cpp)
 
 target_compile_features(pigisland PUBLIC cxx_std_17)
 target_link_libraries(pigisland PRIVATE kmint)

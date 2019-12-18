@@ -2,12 +2,12 @@
 #define KMINT_PIGISLAND_PIG_HPP
 
 #include "kmint/play.hpp"
+#include "kmint/pigisland/SteeringBehaviors.hpp"
 #include <tuple>
 #include <vector>
 
 namespace kmint {
 namespace pigisland {
-
 class pig : public play::free_roaming_actor {
 public:
   pig(math::vector2d location);
@@ -16,8 +16,9 @@ public:
   scalar perception_range() const override { return 100.0f; }
   bool perceivable() const override { return true; }
   bool incorporeal() const override { return false; }
-  scalar collision_range() const override { return 16.0; }
+  std::string type() const override { return "pig"; }
   void act(delta_time dt) override;
+  SteeringBehaviors Steering;
 private:
   play::image_drawable drawable_;
 };

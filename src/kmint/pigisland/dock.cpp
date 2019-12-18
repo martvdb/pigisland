@@ -5,13 +5,13 @@ namespace pigisland {
 
 dock::dock(int minRepair, int maxRepair, int initial_node) : _minRepair{ minRepair }, _maxRepair{ maxRepair }, _dockNode{ initial_node } {}
 
-void dock::repair(boat* boat) const
+void dock::repair(boat& boat) const
 {
 	if (_minRepair == _maxRepair) {
-		boat->repair(_maxRepair);
+		boat.repair(_maxRepair);
 	}
 	else {
-		boat->repair(random_int(_minRepair, _maxRepair));
+		boat.repair(random_int(_minRepair, _maxRepair));
 	}
 	
 }

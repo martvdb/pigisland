@@ -4,6 +4,11 @@
 #include "kmint/map/map.hpp"
 #include "kmint/play.hpp"
 #include "kmint/primitives.hpp"
+#include "kmint/pigisland/node_algorithm.hpp"
+#include "kmint/pigisland/resources.hpp"
+#include "kmint/random.hpp"
+#include "kmint/pigisland/Aster.hpp"
+#include "kmint/pigisland/pig.hpp"
 
 namespace kmint {
 namespace pigisland {
@@ -18,9 +23,9 @@ public:
 	bool incorporeal() const override { return false; }
 	// geeft de lengte van een zijde van de collision box van deze actor terug.
 	// Belangrijk voor collision detection
-	scalar collision_range() const override { return 64.0; }
+	scalar collision_range() const override { return 32.0; }
 	bool perceptive() const override { return true; }
-	scalar perception_range() const override { return 100.0f; }
+	scalar perception_range() const override { return 1000.0f; }
 	bool perceivable() const override { return true; }
 private:
 	int amountOfSteps_ = 0;

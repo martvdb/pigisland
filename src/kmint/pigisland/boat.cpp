@@ -1,8 +1,5 @@
 #include "kmint/pigisland/boat.hpp"
-#include "kmint/pigisland/node_algorithm.hpp"
-#include "kmint/pigisland/resources.hpp"
-#include "kmint/random.hpp"
-#include "kmint/pigisland/Aster.hpp"
+
 
 namespace kmint {
 namespace pigisland {
@@ -21,11 +18,16 @@ namespace pigisland {
     if (to_seconds(t_passed_) >= 1) 
 	{
 		int next_index;
-		if (paintDamage_ < 3) {
+		if (paintDamage_ < 100) {
 			// pick random edge
+			for (auto i = begin_collision(); i != end_collision(); ++i) {
+				if (i->type() == "pig") {
+					i->remove();
+				}
+			}
 			next_index = random_int(0, node().num_edges());
 			paintDamage_++;
-			if (paintDamage_ == 3) {
+			if (paintDamage_ >= 100) {
 				mooringPlace = find_random_mooring_place(graph_).node_id();
 			}
 		}
@@ -33,16 +35,13 @@ namespace pigisland {
 			if (this->node().node_id() == mooringPlace) {
 				auto i = std::find_if(docks_.begin(), docks_.end(), [this](auto& dock) {
 					return dock.dockNode() == mooringPlace;
-					});
-				i->repair(this);
+				});
+				i->repair(*this);
 				next_index = random_int(0, node().num_edges());
 			}
 			else {
 				next_index = calculateRoute(this->node().node_id(), mooringPlace, graph_);
-				
 			}
-
-			
 		}
 		if (node()[next_index].weight() > 1) {
 			t_passed_ = from_seconds(-1 * node()[next_index].weight());

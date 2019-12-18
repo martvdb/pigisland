@@ -56,6 +56,9 @@ int calculateRoute(size_t start_id , size_t target_id, kmint::map::map_graph &g)
 			graph[to.node_id()].tag(kmint::graph::node_tag::visited);
 			if (costs[to.node_id()] > costs[nodeid] + node[i].weight()) {
 				costs[to.node_id()] = costs[nodeid] + node[i].weight();
+				if (nodeid == 0) {
+					int k = 9;
+				}
 				predecessors.emplace(to.node_id(), nodeid);
 				if (to.node_id() == target_id) {
 					queue.clear();

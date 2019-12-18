@@ -3,6 +3,7 @@
 #include "kmint/pigisland/resources.hpp"
 #include "kmint/random.hpp"
 #include "kmint/pigisland/Aster.hpp"
+#include "kmint/pigisland/pig.hpp"
 namespace kmint {
 namespace pigisland {
   shark::shark(map::map_graph& g, map::map_node& initial_node)
@@ -28,7 +29,9 @@ namespace pigisland {
 	  }
 	  if(amountOfSteps_ < 100) {
 		  for (auto i = begin_collision(); i != end_collision(); ++i) {
-			  i->remove();
+			  if (i->type() == "pig") {
+				  i->remove();
+			  }
 		  }
 		  float dist = 10000.0f;
 		  kmint::math::vector2d loc = kmint::math::vector2d();
@@ -48,14 +51,19 @@ namespace pigisland {
 			  if (node_id != this->node().node_id()) {
 				  next_index = calculateRoute(this->node().node_id(), node_id, graph_);
 			  }
-			  
+			  loc = kmint::math::vector2d(0, 0);
 		  }
 		  else {
 			  next_index = random_int(0, node().num_edges());
 		  }
 	  }
 
-
+	  if (node()[next_index].weight() > 1) {
+		  t_passed_ = from_seconds(-1 * node()[next_index].weight());
+	  }
+	  else {
+		  t_passed_ = from_seconds(0);
+	  }
 
 	  this->node(node()[next_index].to());
 	  amountOfSteps_++;

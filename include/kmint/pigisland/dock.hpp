@@ -12,7 +12,7 @@ namespace kmint {
 		class dock {
 		public:
 			dock(int minRepair, int maxRepair, int initial_node);
-			void repair(boat* boat) const;
+			void repair(boat& boat) const;
 			int dockNode() { return _dockNode; }
 		private:
 			int _minRepair;
