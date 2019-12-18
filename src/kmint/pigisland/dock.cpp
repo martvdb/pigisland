@@ -7,7 +7,13 @@ dock::dock(int minRepair, int maxRepair, int initial_node) : _minRepair{ minRepa
 
 void dock::repair(boat* boat) const
 {
-	boat->repair(random_int(_minRepair, _maxRepair));
+	if (_minRepair == _maxRepair) {
+		boat->repair(_maxRepair);
+	}
+	else {
+		boat->repair(random_int(_minRepair, _maxRepair));
+	}
+	
 }
 
 }

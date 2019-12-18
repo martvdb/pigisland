@@ -18,9 +18,9 @@ public:
 	bool incorporeal() const override { return false; }
 	// geeft de lengte van een zijde van de collision box van deze actor terug.
 	// Belangrijk voor collision detection
-	scalar collision_range() const override { return 16.0; }
+	scalar collision_range() const override { return 64.0; }
 	bool perceptive() const override { return true; }
-	scalar perception_range() const override { return 1000.0f; }
+	scalar perception_range() const override { return 100.0f; }
 	bool perceivable() const override { return true; }
 private:
 	int amountOfSteps_ = 0;
