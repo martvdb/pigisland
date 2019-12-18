@@ -18,6 +18,7 @@ add_executable(pigisland
   src/kmint/pigisland/shark.cpp
   src/kmint/pigisland/boat.cpp
   src/kmint/pigisland/pig.cpp
+  src/kmint/pigisland/dock.cpp
   src/kmint/pigisland/Aster.cpp)
 
 target_compile_features(pigisland PUBLIC cxx_std_17)

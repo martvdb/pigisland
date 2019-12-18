@@ -19,11 +19,16 @@ public:
 	// geeft de lengte van een zijde van de collision box van deze actor terug.
 	// Belangrijk voor collision detection
 	scalar collision_range() const override { return 16.0; }
+	bool perceptive() const override { return true; }
+	scalar perception_range() const override { return 1000.0f; }
+	bool perceivable() const override { return true; }
 private:
+	int amountOfSteps_ = 0;
 	// hoeveel tijd is verstreken sinds de laatste beweging
 	delta_time t_passed_{};
 	// weet hoe de koe getekend moet worden
 	play::image_drawable drawable_;
+	map::map_graph &graph_;
 };
 
 } // namespace pigisland
