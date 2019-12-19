@@ -36,12 +36,16 @@ namespace pigisland {
 		  float dist = 10000.0f;
 		  kmint::math::vector2d loc = kmint::math::vector2d();
 		  for (auto i = begin_perceived(); i != end_perceived(); ++i) {
+			  const map::map_node& node = find_closest_node_to(graph_, i->location());
+			  if (node.node_info().kind != 'L') {
+				  auto const& a = *i;
+				  if (distance(a.location(), this->node().location()) < dist) {
+					  dist = distance(a.location(), this->node().location());
 
-			  auto const& a = *i;
-			  if (distance(a.location(), this->node().location()) < dist) {
-				  dist = distance(a.location(), this->node().location());
-				  loc = a.location();
+					  loc = a.location();
+				  }
 			  }
+			 
 
 		  }
 		  if (loc != kmint::math::vector2d(0,0)) {
