@@ -25,6 +25,7 @@ public:
 	// geeft de lengte van een zijde van de collision box van deze actor terug.
 	// Belangrijk voor collision detection
 	scalar collision_range() const override { return 32.0; }
+	std::string type() const override { return "boat"; }
 	void repair(int amountOfRepairPoints);
 private:
 	// hoeveel tijd is verstreken sinds de laatste beweging

@@ -26,6 +26,7 @@ public:
 	scalar collision_range() const override { return 32.0; }
 	bool perceptive() const override { return true; }
 	scalar perception_range() const override { return 1000.0f; }
+	std::string type() const override { return "shark"; }
 	bool perceivable() const override { return true; }
 private:
 	int amountOfSteps_ = 0;

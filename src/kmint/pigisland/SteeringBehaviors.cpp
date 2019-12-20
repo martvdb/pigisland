@@ -35,8 +35,93 @@ math::vector2d SteeringBehaviors::Seek(const play::free_roaming_actor* evader, m
 	return (DesiredVelocity);
 }
 
-math::vector2d SteeringBehaviors::Flee(const play::actor* chaser, const play::free_roaming_actor* evader)
+math::vector2d SteeringBehaviors::Flee(const math::vector2d chaser, const play::free_roaming_actor* evader)
 {
-	math::vector2d DesiredVelocity = math::normalize(chaser->location() - evader->location());
+	math::vector2d DesiredVelocity = math::normalize(evader->location() - chaser);
 	return (DesiredVelocity);
 }
+
+math::vector2d SteeringBehaviors::Separation(const play::free_roaming_actor* separator)
+{
+	math::vector2d SteeringForce;
+	int NeighborCount = 0;
+	for (auto i = separator->begin_perceived(); i != separator->end_perceived(); ++i)
+	{
+		auto const& a = *i;
+		
+		//make sure this agent isn't included in the calculations and that
+		//the agent being examined is close enough.
+		if (a.type() == "pig")
+		{
+			math::vector2d ToAgent = separator->location() - a.location();
+			//scale the force inversely proportional to the agent's distance
+			//from its neighbor.
+			SteeringForce += normalize(ToAgent) / length(ToAgent);
+			++NeighborCount;
+		}
+	}
+	if (NeighborCount > 0)
+	{
+		SteeringForce /= (double)NeighborCount;
+	}
+	return SteeringForce;
+}
+
+math::vector2d SteeringBehaviors::Alignment(const play::free_roaming_actor* aligner)
+{
+	//used to record the average heading of the neighbors
+	math::vector2d AverageHeading;
+	//used to count the number of vehicles in the neighborhood
+	int NeighborCount = 0;
+		//iterate through all the tagged vehicles and sum their heading vectors
+		for (auto i = aligner->begin_perceived(); i != aligner->end_perceived(); ++i)
+		{
+			auto const& a = *i;
+
+			//make sure this agent isn't included in the calculations and that
+			//the agent being examined is close enough.
+			if (a.type() == "pig")
+			{
+				AverageHeading += a.heading();
+				++NeighborCount;
+			}
+		}
+	//if the neighborhood contained one or more vehicles, average their
+	//heading vectors.
+	if (NeighborCount > 0)
+	{
+		AverageHeading /= (double)NeighborCount;
+		AverageHeading -= aligner->Heading();
+	}
+	return AverageHeading;
+}
+
+math::vector2d SteeringBehaviors::Cohesion(const play::free_roaming_actor* aligner)
+{
+	//first find the center of mass of all the agents
+	math::vector2d CenterOfMass, SteeringForce;
+	int NeighborCount = 0;
+	//iterate through the neighbors and sum up all the position vectors
+	for (auto i = aligner->begin_perceived(); i != aligner->end_perceived(); ++i)
+	{
+		auto const& a = *i;
+
+		//make sure this agent isn't included in the calculations and that
+		//the agent being examined is close enough.
+		if (a.type() == "pig")
+		{
+			CenterOfMass += a.location();
+			++NeighborCount;
+		}
+	}
+	if (NeighborCount > 0)
+	{
+		//the center of mass is the average of the sum of positions
+		CenterOfMass /= (double)NeighborCount;
+		//now seek toward that position
+		SteeringForce = Seek(aligner, CenterOfMass);
+	}
+	return SteeringForce;
+}
+
+

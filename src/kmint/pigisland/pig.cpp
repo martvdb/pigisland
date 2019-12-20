@@ -14,13 +14,29 @@ pig::pig(math::vector2d location)
 
 void pig::act(delta_time dt) {
 
-
+	steer_force = normalize(Steering.Wander()) * 25;
+	
 	for (auto i = begin_perceived(); i != end_perceived(); ++i) {
-		//const map::map_node& node = find_closest_node_to(graph_, i->location());
-		//int node_id = node.node_id();
-		//next_index = calculateRoute(this->node().node_id(), node_id, graph_);
+		if (i->type() == "boat")
+		{
+			steer_force = Steering.Seek(this, i->location()) * 10;
+		}
+		if(i->type() == "shark")
+		{
+			steer_force = Steering.Flee(i->location(), this) * 10;
+		}
 	}
-	steer_force = Steering.Wander();
+	
+	steer_force += Steering.Cohesion(this) * 1;
+	steer_force += Steering.Separation(this) * 1;
+	steer_force += Steering.Alignment(this) * 3;
+
+	if(length(steer_force) > maxForce)
+	{
+		steer_force = normalize(steer_force) * maxForce;
+	}
+	
+	
 	const kmint::math::vector2d acceleration = steer_force / mass;
 	velocity += acceleration * kmint::to_seconds(dt);
 
