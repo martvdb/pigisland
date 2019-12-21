@@ -21,6 +21,11 @@ public:
   SteeringBehaviors Steering;
 private:
   play::image_drawable drawable_;
+  float knabbelFactor_;
+  float boatFactor_;
+  float cohesionFactor_;
+  float separationFactor_;
+  float alignmentFactor_;
 };
 
 } // namespace pigisland

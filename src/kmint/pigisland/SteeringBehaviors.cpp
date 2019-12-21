@@ -37,7 +37,7 @@ math::vector2d SteeringBehaviors::Seek(const play::free_roaming_actor* evader, m
 
 math::vector2d SteeringBehaviors::Flee(const math::vector2d chaser, const play::free_roaming_actor* evader)
 {
-	math::vector2d DesiredVelocity = math::normalize(evader->location() - chaser);
+	math::vector2d DesiredVelocity = math::normalize(evader->location() - chaser) * evader->MaxSpeed();
 	return (DesiredVelocity);
 }
 
@@ -60,10 +60,10 @@ math::vector2d SteeringBehaviors::Separation(const play::free_roaming_actor* sep
 			++NeighborCount;
 		}
 	}
-	if (NeighborCount > 0)
-	{
-		SteeringForce /= (double)NeighborCount;
-	}
+	//if (NeighborCount > 0)
+	//{
+	//	SteeringForce /= (double)NeighborCount;
+	//}
 	return SteeringForce;
 }
 
@@ -121,7 +121,7 @@ math::vector2d SteeringBehaviors::Cohesion(const play::free_roaming_actor* align
 		//now seek toward that position
 		SteeringForce = Seek(aligner, CenterOfMass);
 	}
-	return SteeringForce;
+	return normalize(SteeringForce);
 }
 
 

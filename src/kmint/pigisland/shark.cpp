@@ -65,15 +65,15 @@ namespace pigisland {
 			  next_index = random_int(0, node().num_edges());
 		  }
 	  }
-
-	  if (node()[next_index].weight() > 1) {
+	  this->node(node()[next_index].to());
+	  if (node().node_info().kind == 'R') {
 		  t_passed_ = from_seconds(-1 * node()[next_index].weight());
 	  }
 	  else {
 		  t_passed_ = from_seconds(0);
 	  }
 
-	  this->node(node()[next_index].to());
+	  
 	  amountOfSteps_++;
     }
   }

@@ -10,26 +10,30 @@ pig::pig(math::vector2d location)
   : play::free_roaming_actor{location},
     drawable_{*this, pig_image()} {
 	Steering = SteeringBehaviors();
+	knabbelFactor_ = random_scalar(-1, 1);
+	boatFactor_ = random_scalar(-1, 1);
+	cohesionFactor_ = random_scalar(0, 1);
+	alignmentFactor_ = random_scalar(0, 1);
+	separationFactor_ = random_scalar(0, 1);
 }
 
 void pig::act(delta_time dt) {
 
-	steer_force = normalize(Steering.Wander()) * 25;
+	steer_force = normalize(Steering.Wander());
 	
 	for (auto i = begin_perceived(); i != end_perceived(); ++i) {
 		if (i->type() == "boat")
 		{
-			steer_force = Steering.Seek(this, i->location()) * 10;
+			steer_force = Steering.Seek(this, i->location()) * boatFactor_;
 		}
 		if(i->type() == "shark")
 		{
-			steer_force = Steering.Flee(i->location(), this) * 10;
+			steer_force = Steering.Flee(i->location(), this) * knabbelFactor_;
 		}
 	}
-	
-	steer_force += Steering.Cohesion(this) * 1;
-	steer_force += Steering.Separation(this) * 1;
-	steer_force += Steering.Alignment(this) * 3;
+	steer_force += Steering.Separation(this) * separationFactor_;
+	steer_force += Steering.Cohesion(this) * cohesionFactor_;
+	steer_force += Steering.Alignment(this) * alignmentFactor_;
 
 	if(length(steer_force) > maxForce)
 	{
