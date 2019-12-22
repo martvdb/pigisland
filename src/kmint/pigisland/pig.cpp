@@ -1,44 +1,27 @@
 #include "kmint/pigisland/pig.hpp"
 #include "kmint/pigisland/resources.hpp"
-#include "kmint/random.hpp"
 
-namespace kmint {
-namespace pigisland {
-
-
+namespace kmint::pigisland
+{
 pig::pig(math::vector2d location)
   : play::free_roaming_actor{location},
-    drawable_{*this, pig_image()} {
-	Steering = SteeringBehaviors();
-	knabbelFactor_ = random_scalar(-1, 1);
-	boatFactor_ = random_scalar(-1, 1);
-	cohesionFactor_ = random_scalar(0, 1);
-	alignmentFactor_ = random_scalar(0, 1);
-	separationFactor_ = random_scalar(0, 1);
-}
+    drawable_{*this, pig_image()} , Steering{ SteeringBehaviors(this) } {}
 
 void pig::act(delta_time dt) {
 
-	steer_force = normalize(Steering.Wander());
-	
 	for (auto i = begin_perceived(); i != end_perceived(); ++i) {
 		if (i->type() == "boat")
 		{
-			steer_force = Steering.Seek(this, i->location()) * boatFactor_;
+			Steering.setSeek(true, i->location());
 		}
-		if(i->type() == "shark")
+		if (i->type() == "shark")
 		{
-			steer_force = Steering.Flee(i->location(), this) * knabbelFactor_;
+			Steering.setFlee(true, i->location());
 		}
 	}
-	steer_force += Steering.Separation(this) * separationFactor_;
-	steer_force += Steering.Cohesion(this) * cohesionFactor_;
-	steer_force += Steering.Alignment(this) * alignmentFactor_;
+	
 
-	if(length(steer_force) > maxForce)
-	{
-		steer_force = normalize(steer_force) * maxForce;
-	}
+	steer_force = Steering.calculate();
 	
 	
 	const kmint::math::vector2d acceleration = steer_force / mass;
@@ -58,8 +41,4 @@ void pig::act(delta_time dt) {
 	kmint::math::vector2d loc = location();
 	location(location() + (velocity * kmint::to_seconds(dt)));
 }
-
-
-} // namespace pigisland
-
 } // namespace kmint

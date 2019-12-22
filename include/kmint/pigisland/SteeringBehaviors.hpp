@@ -2,22 +2,48 @@
 #include "kmint/math/vector2d.hpp" // voor window en app
 #include "kmint/play.hpp"
 #include "kmint/play/free_roaming_actor.hpp"
+#include  "kmint/random.hpp"
 using namespace kmint;
 class SteeringBehaviors {
 public:
-	SteeringBehaviors();
-	kmint::math::vector2d calculate();
-	kmint::math::vector2d Wander();
-	kmint::math::vector2d Seek(const play::free_roaming_actor* seeker, math::vector2d TargetPos);
-	kmint::math::vector2d Flee(const math::vector2d chaser, const play::free_roaming_actor* evader);
-	math::vector2d Separation(const play::free_roaming_actor* separator);
-	math::vector2d Alignment(const play::free_roaming_actor* aligner);
-	math::vector2d Cohesion(const play::free_roaming_actor* aligner);
+	SteeringBehaviors(play::free_roaming_actor* steeringActor);
+	math::vector2d calculate();
+	math::vector2d Wander();
+	math::vector2d Seek(math::vector2d target);
+	math::vector2d Flee();
+	math::vector2d Separation();
+	math::vector2d Alignment();
+	math::vector2d Cohesion();
+
+	bool FleeOn() const;
+	bool SeekOn() const;
+
+	void setSeek(bool seek, math::vector2d chaseTarget);
+	void setFlee(bool flee, math::vector2d fleeTarget);
+
+	math::vector2d Truncate(kmint::math::vector2d steerForce, float maxForce) const;
+
 private:
 	// rectangle_drawable drawable_;
-	float m_dWanderRadius = 50;
+	float m_dWanderRadius = 5;
 	//This is the radius of the constraining circle.
-	float m_dWanderDistance = 1.f;
+	float m_dWanderDistance = 3.f;
 	//This is the distance the wander circle is projected in front of the agent.
 	float m_dWanderJitter = 28.f;
+
+	math::vector2d _fleeTarget{};
+	math::vector2d _chaseTarget{};
+	
+	//SteeringBehaviorWeights
+	float _dWanderAmount;
+	float _dFleeAmount{};
+	float _dSeekAmount{};
+	float _dAlingmentAmount{};
+	float _dCohesionAmount{};
+	float _dSeparationAmount{};
+	float _dWallAvoidanceAmount;
+	bool isFleeOn = false;
+	bool isSeekOn = false;
+	
+	play::free_roaming_actor* steeringActor{};
 };
