@@ -1,13 +1,25 @@
 #include "..\..\..\include\kmint\pigisland\SteeringBehaviors.hpp"
-#include <random>
 
-SteeringBehaviors::SteeringBehaviors()
+SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : _dWanderAmount { 1 } , _dWallAvoidanceAmount { 3 }
 {
+	this.steeringActor = steeringActor;
+	_dFleeAmount = random_scalar(-1, 1);
+	_dSeekAmount = random_scalar(-1, 1);
+	_dCohesionAmount = random_scalar(0, 1);
+	_dAlingmentAmount = random_scalar(0, 1);
+	_dSeparationAmount = random_scalar(0, 1);
 }
 
-math::vector2d SteeringBehaviors::calculate()
-{
-	return Wander();
+SVector2D SteeringBehaviors::calculate() {
+
+	kmint::math::vector2d SteeringForce;
+	SteeringForce += Wander() * dWanderAmount;
+	if (SeekOn()) { SteeringForce += Flee() * dFleeAmount; }
+	if (FleeOn()) { SteeringForce += Seek() * dSeekAmount; }
+	SteeringForce += Alignment() * dAlingmentAmount;
+	SteeringForce += Cohesion() * dCohesionAmount;
+	SteeringForce += Separation() * dSeparationAmount;
+	return Truncate(SteeringForce, 10);
 }
 
 math::vector2d SteeringBehaviors::Wander()
@@ -28,24 +40,24 @@ math::vector2d SteeringBehaviors::Wander()
 	return targetLocal;
 }
 
-math::vector2d SteeringBehaviors::Seek(const play::free_roaming_actor* evader, math::vector2d TargetPos)
+math::vector2d SteeringBehaviors::Seek(math::vector2d TargetPos)
 {
-	math::vector2d DesiredVelocity = math::normalize(TargetPos - evader->location())
+	math::vector2d DesiredVelocity = math::normalize(steeringActor->location() - TargetPos)
 		* evader->MaxSpeed();
 	return (DesiredVelocity);
 }
 
-math::vector2d SteeringBehaviors::Flee(const math::vector2d chaser, const play::free_roaming_actor* evader)
+math::vector2d SteeringBehaviors::Flee(const math::vector2d chaser)
 {
-	math::vector2d DesiredVelocity = math::normalize(evader->location() - chaser) * evader->MaxSpeed();
+	math::vector2d DesiredVelocity = math::normalize(steeringActor->location() - chaser) * evader->MaxSpeed();
 	return (DesiredVelocity);
 }
 
-math::vector2d SteeringBehaviors::Separation(const play::free_roaming_actor* separator)
+math::vector2d SteeringBehaviors::Separation()
 {
 	math::vector2d SteeringForce;
 	int NeighborCount = 0;
-	for (auto i = separator->begin_perceived(); i != separator->end_perceived(); ++i)
+	for (auto i = steeringActor->begin_perceived(); i != steeringActor->end_perceived(); ++i)
 	{
 		auto const& a = *i;
 		
@@ -53,7 +65,7 @@ math::vector2d SteeringBehaviors::Separation(const play::free_roaming_actor* sep
 		//the agent being examined is close enough.
 		if (a.type() == "pig")
 		{
-			math::vector2d ToAgent = separator->location() - a.location();
+			math::vector2d ToAgent = steeringActor->location() - a.location();
 			//scale the force inversely proportional to the agent's distance
 			//from its neighbor.
 			SteeringForce += normalize(ToAgent) / length(ToAgent);
@@ -67,14 +79,14 @@ math::vector2d SteeringBehaviors::Separation(const play::free_roaming_actor* sep
 	return SteeringForce;
 }
 
-math::vector2d SteeringBehaviors::Alignment(const play::free_roaming_actor* aligner)
+math::vector2d SteeringBehaviors::Alignment()
 {
 	//used to record the average heading of the neighbors
 	math::vector2d AverageHeading;
 	//used to count the number of vehicles in the neighborhood
 	int NeighborCount = 0;
 		//iterate through all the tagged vehicles and sum their heading vectors
-		for (auto i = aligner->begin_perceived(); i != aligner->end_perceived(); ++i)
+		for (auto i = steeringActor->begin_perceived(); i != steeringActor->end_perceived(); ++i)
 		{
 			auto const& a = *i;
 
@@ -91,18 +103,18 @@ math::vector2d SteeringBehaviors::Alignment(const play::free_roaming_actor* alig
 	if (NeighborCount > 0)
 	{
 		AverageHeading /= (double)NeighborCount;
-		AverageHeading -= aligner->Heading();
+		AverageHeading -= steeringActor->Heading();
 	}
 	return AverageHeading;
 }
 
-math::vector2d SteeringBehaviors::Cohesion(const play::free_roaming_actor* aligner)
+math::vector2d SteeringBehaviors::Cohesion()
 {
 	//first find the center of mass of all the agents
 	math::vector2d CenterOfMass, SteeringForce;
 	int NeighborCount = 0;
 	//iterate through the neighbors and sum up all the position vectors
-	for (auto i = aligner->begin_perceived(); i != aligner->end_perceived(); ++i)
+	for (auto i = steeringActor->begin_perceived(); i != steeringActor->end_perceived(); ++i)
 	{
 		auto const& a = *i;
 
@@ -119,9 +131,35 @@ math::vector2d SteeringBehaviors::Cohesion(const play::free_roaming_actor* align
 		//the center of mass is the average of the sum of positions
 		CenterOfMass /= (double)NeighborCount;
 		//now seek toward that position
-		SteeringForce = Seek(aligner, CenterOfMass);
+		SteeringForce = Seek(CenterOfMass);
 	}
 	return normalize(SteeringForce);
 }
 
+bool SteeringBehaviors::FleeOn() const
+{
+	return isFleeOn;
+}
+bool SteeringBehaviors::SeekOn() const
+{
+	return isSeekOn;
+}
+
+void SteeringBehaviors::setFlee(bool flee)
+{
+	isFleeOn = flee;
+}
+void SteeringBehaviors::setSeek(bool seek)
+{
+	isSeekOn = seek;
+}
+
+kmint::math::vector2d SteeringBehaviors::Truncate(kmint::math::vector2d steerForce, kmint::math::vector2d maxForce) const
+{
+	if (length(steerForce) > maxForce)
+	{
+		steerForce = normalize(steerForce) * maxForce;
+	}
+	return  steerForce;
+}
 
