@@ -22,7 +22,10 @@ add_executable(pigisland
   src/kmint/pigisland/Aster.cpp
   src/kmint/pigisland/SteeringBehaviors.cpp
   src/kmint/pigisland/States/SharkStates/SharkChaseState.cpp
-  src/kmint/pigisland/States/SharkStates/SharkWanderState.cpp)
+  src/kmint/pigisland/States/SharkStates/SharkWanderState.cpp
+  src/kmint/pigisland/States/SharkStates/SharkRestState.cpp
+  src/kmint/pigisland/States/BoatStates/BoatDockState.cpp
+  src/kmint/pigisland/States/BoatStates/BoatWanderState.cpp)
 
 target_compile_features(pigisland PUBLIC cxx_std_17)
 target_link_libraries(pigisland PRIVATE kmint)

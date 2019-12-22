@@ -30,11 +30,12 @@ public:
 	std::string type() const override { return "shark"; }
 	bool perceivable() const override { return true; }
 	void setState(SharkState* state);
-	int next_index = 0;
-	
+	SharkState* state() { return state_; }
+	int amountOfSteps_ = 0;
+	map::map_graph& graph() { return graph_; }
 private:
 	SharkState* state_;
-	int amountOfSteps_ = 0;
+	
 	// hoeveel tijd is verstreken sinds de laatste beweging
 	delta_time t_passed_{};
 	// weet hoe de koe getekend moet worden

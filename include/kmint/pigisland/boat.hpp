@@ -10,6 +10,7 @@
 #include "kmint/random.hpp"
 #include "kmint/pigisland/Aster.hpp"
 #include "kmint/pigisland/pig.hpp"
+#include "States/BoatStates/BoatState.hpp"
 
 namespace kmint {
 namespace pigisland {
@@ -27,15 +28,21 @@ public:
 	scalar collision_range() const override { return 32.0; }
 	std::string type() const override { return "boat"; }
 	void repair(int amountOfRepairPoints);
+	int paintDamage_ = 0;
+	void setState(BoatState* state);
+	BoatState* state() { return state_; }
+	map::map_graph& graph() { return graph_; }
+	int mooringPlace;
+	std::vector<dock> docks_;
 private:
 	// hoeveel tijd is verstreken sinds de laatste beweging
 	delta_time t_passed_{};
-	std::vector<dock> docks_;
+	
 	// weet hoe de koe getekend moet worden
 	play::image_drawable drawable_;
-	int paintDamage_ = 0;
+	BoatState* state_;
 	map::map_graph &graph_;
-	int mooringPlace;
+	
 };
 
 } // namespace pigisland
