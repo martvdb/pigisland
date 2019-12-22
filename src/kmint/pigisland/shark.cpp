@@ -4,8 +4,9 @@
 #include "kmint/random.hpp"
 #include "kmint/pigisland/Aster.hpp"
 #include "kmint/pigisland/pig.hpp"
-namespace kmint {
-namespace pigisland {
+
+namespace kmint::pigisland
+{
   shark::shark(map::map_graph& g, map::map_node& initial_node)
     : play::map_bound_actor{ initial_node },
 	  drawable_{ *this, graphics::image{shark_image()}}, graph_{ g } {}
@@ -82,6 +83,4 @@ namespace pigisland {
 	  amountOfSteps_++;
     }
   }
-
-} // namespace pigisland
 } // namespace kmint

@@ -1,12 +1,10 @@
 #pragma once
 #include "SharkState.hpp"
-#include "kmint/pigisland/shark.hpp"
 
-class SharkChaseState : public SharkState
-{
-public:
-	void Execute(pigisland::shark* shark) override;
-};
-
+		class SharkChaseState : public SharkState
+		{
+		public:
+			void Execute(kmint::pigisland::shark* shark) override;
+		};
 
 
