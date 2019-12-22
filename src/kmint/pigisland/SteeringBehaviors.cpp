@@ -1,4 +1,5 @@
 #include "..\..\..\include\kmint\pigisland\SteeringBehaviors.hpp"
+#include <random>
 
 SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : _dWanderAmount { 1 } , _dWallAvoidanceAmount { 3 }
 {
