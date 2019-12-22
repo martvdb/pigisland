@@ -20,7 +20,9 @@ add_executable(pigisland
   src/kmint/pigisland/pig.cpp
   src/kmint/pigisland/dock.cpp
   src/kmint/pigisland/Aster.cpp
-  src/kmint/pigisland/SteeringBehaviors.cpp)
+  src/kmint/pigisland/SteeringBehaviors.cpp
+  src/kmint/pigisland/States/SharkStates/SharkChaseState.cpp
+  src/kmint/pigisland/States/SharkStates/SharkWanderState.cpp)
 
 target_compile_features(pigisland PUBLIC cxx_std_17)
 target_link_libraries(pigisland PRIVATE kmint)

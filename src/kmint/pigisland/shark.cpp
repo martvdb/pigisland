@@ -10,12 +10,17 @@ namespace pigisland {
     : play::map_bound_actor{ initial_node },
 	  drawable_{ *this, graphics::image{shark_image()}}, graph_{ g } {}
 
+  void shark::setState(SharkState* state)
+  {
+	  delete state_;
+	  state_ = state;
+  }
 
   void shark::act(delta_time dt) {
     t_passed_ += dt;
     if (to_seconds(t_passed_) >= 1) {
       // pick random edge
-		int next_index = 0;
+		
 
       t_passed_ = from_seconds(0);
 	  if (amountOfSteps_ >= 100) {

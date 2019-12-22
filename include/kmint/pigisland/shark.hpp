@@ -9,6 +9,7 @@
 #include "kmint/random.hpp"
 #include "kmint/pigisland/Aster.hpp"
 #include "kmint/pigisland/pig.hpp"
+#include "States/SharkStates/SharkState.hpp"
 
 namespace kmint {
 namespace pigisland {
@@ -28,7 +29,11 @@ public:
 	scalar perception_range() const override { return 1000.0f; }
 	std::string type() const override { return "shark"; }
 	bool perceivable() const override { return true; }
+	void setState(SharkState* state);
+	int next_index = 0;
+	
 private:
+	SharkState* state_;
 	int amountOfSteps_ = 0;
 	// hoeveel tijd is verstreken sinds de laatste beweging
 	delta_time t_passed_{};
