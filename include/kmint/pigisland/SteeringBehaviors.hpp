@@ -3,6 +3,7 @@
 #include "kmint/play.hpp"
 #include "kmint/play/free_roaming_actor.hpp"
 #include  "kmint/random.hpp"
+#include <vector>
 using namespace kmint;
 class SteeringBehaviors {
 public:
@@ -21,7 +22,10 @@ public:
 	void setSeek(bool seek, math::vector2d chaseTarget);
 	void setFlee(bool flee, math::vector2d fleeTarget);
 
+	void CreateFeelers();
+
 	math::vector2d Truncate(kmint::math::vector2d steerForce, float maxForce) const;
+
 
 private:
 	// rectangle_drawable drawable_;
@@ -30,6 +34,8 @@ private:
 	float m_dWanderDistance = 3.f;
 	//This is the distance the wander circle is projected in front of the agent.
 	float m_dWanderJitter = 28.f;
+
+	std::vector<math::vector2d> m_Feelers;
 
 	math::vector2d _fleeTarget{};
 	math::vector2d _chaseTarget{};

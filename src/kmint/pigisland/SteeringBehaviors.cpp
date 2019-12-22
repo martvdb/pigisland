@@ -10,6 +10,7 @@ SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : 
 	_dCohesionAmount = random_scalar(0, 1);
 	_dAlingmentAmount = random_scalar(0, 1);
 	_dSeparationAmount = random_scalar(0, 1);
+	m_Feelers(3);
 }
 
 math::vector2d SteeringBehaviors::calculate() {
@@ -137,6 +138,25 @@ math::vector2d SteeringBehaviors::Cohesion()
 	}
 	return normalize(SteeringForce);
 }
+
+void SteeringBehaviors::CreateFeelers()
+{
+	//feeler pointing straight in front
+	m_Feelers[0] = steeringActor->Pos() + 10 * steeringActor->Heading();
+
+	//feeler to left
+	math::vector2d temp = steeringActor->Heading();
+	temp.x(temp.y());
+	temp.y(-temp.x());
+	m_Feelers[1] = steeringActor->Pos() + 10 / 2.0f * temp;
+
+	//feeler to right
+	temp = steeringActor->Heading();
+	temp.x(-temp.y());
+	temp.y(temp.x());
+	m_Feelers[2] = steeringActor->Pos() + 10 / 2.0f * temp;
+}
+
 
 bool SteeringBehaviors::FleeOn() const
 {
