@@ -1,9 +1,9 @@
 #include "..\..\..\include\kmint\pigisland\SteeringBehaviors.hpp"
 #include <random>
-
+using namespace kmint;
 SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : _dWanderAmount { 1 } , _dWallAvoidanceAmount { 3 }
 {
-	this.steeringActor = steeringActor;
+	this->steeringActor = steeringActor;
 	_dFleeAmount = random_scalar(-1, 1);
 	_dSeekAmount = random_scalar(-1, 1);
 	_dCohesionAmount = random_scalar(0, 1);
@@ -41,16 +41,16 @@ math::vector2d SteeringBehaviors::Wander()
 	return targetLocal;
 }
 
-math::vector2d SteeringBehaviors::Seek(math::vector2d TargetPos)
+math::vector2d SteeringBehaviors::Seek()
 {
-	math::vector2d DesiredVelocity = math::normalize(steeringActor->location() - TargetPos)
-		* evader->MaxSpeed();
+	math::vector2d DesiredVelocity = math::normalize(_chaseTarget - steeringActor->location())
+		* steeringActor->MaxSpeed();
 	return (DesiredVelocity);
 }
 
-math::vector2d SteeringBehaviors::Flee(const math::vector2d chaser)
+math::vector2d SteeringBehaviors::Flee()
 {
-	math::vector2d DesiredVelocity = math::normalize(steeringActor->location() - chaser) * evader->MaxSpeed();
+	math::vector2d DesiredVelocity = math::normalize(steeringActor->location() - _fleeTarget) * steeringActor->MaxSpeed();
 	return (DesiredVelocity);
 }
 
@@ -146,16 +146,18 @@ bool SteeringBehaviors::SeekOn() const
 	return isSeekOn;
 }
 
-void SteeringBehaviors::setFlee(bool flee)
+void SteeringBehaviors::setFlee(bool flee, math::vector2d fleeTarget)
 {
+	_fleeTarget = fleeTarget;
 	isFleeOn = flee;
 }
-void SteeringBehaviors::setSeek(bool seek)
+void SteeringBehaviors::setSeek(bool seek, math::vector2d chaseTarget)
 {
+	_chaseTarget = chaseTarget;
 	isSeekOn = seek;
 }
 
-kmint::math::vector2d SteeringBehaviors::Truncate(kmint::math::vector2d steerForce, kmint::math::vector2d maxForce) const
+math::vector2d SteeringBehaviors::Truncate(math::vector2d steerForce, math::vector2d maxForce) const
 {
 	if (length(steerForce) > maxForce)
 	{
