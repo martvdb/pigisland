@@ -5,11 +5,21 @@ namespace kmint::pigisland
 {
 pig::pig(math::vector2d location)
   : play::free_roaming_actor{location},
-    drawable_{*this, pig_image()} {
-	Steering = SteeringBehaviors(this);
-}
+    drawable_{*this, pig_image()} , Steering{ SteeringBehaviors(this) } {}
 
 void pig::act(delta_time dt) {
+
+	for (auto i = begin_perceived(); i != end_perceived(); ++i) {
+		if (i->type() == "boat")
+		{
+			Steering.setSeek(true, i->location());
+		}
+		if (i->type() == "shark")
+		{
+			Steering.setFlee(true, i->location());
+		}
+	}
+	
 
 	steer_force = Steering.calculate();
 	

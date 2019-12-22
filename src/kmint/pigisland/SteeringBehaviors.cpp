@@ -1,7 +1,8 @@
 #include "..\..\..\include\kmint\pigisland\SteeringBehaviors.hpp"
 #include <random>
 using namespace kmint;
-SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : _dWanderAmount { 1 } , _dWallAvoidanceAmount { 3 }
+
+SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : _dWanderAmount { 0.7 } , _dWallAvoidanceAmount { 3 }
 {
 	this->steeringActor = steeringActor;
 	_dFleeAmount = random_scalar(-1, 1);
@@ -11,16 +12,16 @@ SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : 
 	_dSeparationAmount = random_scalar(0, 1);
 }
 
-SVector2D SteeringBehaviors::calculate() {
+math::vector2d SteeringBehaviors::calculate() {
 
-	kmint::math::vector2d SteeringForce;
-	SteeringForce += Wander() * dWanderAmount;
-	if (SeekOn()) { SteeringForce += Flee() * dFleeAmount; }
-	if (FleeOn()) { SteeringForce += Seek() * dSeekAmount; }
-	SteeringForce += Alignment() * dAlingmentAmount;
-	SteeringForce += Cohesion() * dCohesionAmount;
-	SteeringForce += Separation() * dSeparationAmount;
-	return Truncate(SteeringForce, 10);
+	math::vector2d SteeringForce;
+	SteeringForce += Wander() * _dWanderAmount;
+	if (SeekOn()) { SteeringForce += Flee() * _dFleeAmount; }
+	if (FleeOn()) { SteeringForce += Seek(_chaseTarget) * _dSeekAmount; }
+	SteeringForce += Alignment() * _dAlingmentAmount;
+	SteeringForce += Cohesion() * _dCohesionAmount;
+	SteeringForce += Separation() * _dSeparationAmount;
+	return Truncate(SteeringForce, 15);
 }
 
 math::vector2d SteeringBehaviors::Wander()
@@ -41,9 +42,9 @@ math::vector2d SteeringBehaviors::Wander()
 	return targetLocal;
 }
 
-math::vector2d SteeringBehaviors::Seek()
+math::vector2d SteeringBehaviors::Seek(math::vector2d target)
 {
-	math::vector2d DesiredVelocity = math::normalize(_chaseTarget - steeringActor->location())
+	math::vector2d DesiredVelocity = math::normalize(target - steeringActor->location())
 		* steeringActor->MaxSpeed();
 	return (DesiredVelocity);
 }
@@ -157,7 +158,7 @@ void SteeringBehaviors::setSeek(bool seek, math::vector2d chaseTarget)
 	isSeekOn = seek;
 }
 
-math::vector2d SteeringBehaviors::Truncate(math::vector2d steerForce, math::vector2d maxForce) const
+math::vector2d SteeringBehaviors::Truncate(math::vector2d steerForce, float maxForce) const
 {
 	if (length(steerForce) > maxForce)
 	{
