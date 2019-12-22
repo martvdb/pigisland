@@ -2,7 +2,7 @@
 #include "../../../../../../libkmint/include/kmint/random.hpp"
 #include "kmint/pigisland/States/SharkStates/SharkChaseState.hpp"
 
-void kmint::pigisland::SharkWanderState::Execute(shark* shark)
+void SharkWanderState::Execute(pigisland::shark* shark)
 {
 	for (auto i = shark->begin_perceived(); i != shark->end_perceived(); ++i) {
 		//shark->setState(new SharkChaseState());

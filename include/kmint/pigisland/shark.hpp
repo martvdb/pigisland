@@ -10,7 +10,7 @@
 #include "kmint/pigisland/Aster.hpp"
 #include "kmint/pigisland/pig.hpp"
 #include "States/SharkStates/SharkState.hpp"
-
+class SharkState;
 namespace kmint {
 namespace pigisland {
 
