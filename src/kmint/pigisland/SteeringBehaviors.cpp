@@ -142,19 +142,19 @@ math::vector2d SteeringBehaviors::Cohesion()
 void SteeringBehaviors::CreateFeelers()
 {
 	//feeler pointing straight in front
-	m_Feelers[0] = steeringActor->Pos() + 10 * steeringActor->Heading();
+	m_Feelers[0] = steeringActor->location() + 10 * steeringActor->Heading();
 
 	//feeler to left
 	math::vector2d temp = steeringActor->Heading();
 	temp.x(temp.y());
 	temp.y(-temp.x());
-	m_Feelers[1] = steeringActor->Pos() + 10 / 2.0f * temp;
+	m_Feelers[1] = steeringActor->location() + 10 / 2.0f * temp;
 
 	//feeler to right
 	temp = steeringActor->Heading();
 	temp.x(-temp.y());
 	temp.y(temp.x());
-	m_Feelers[2] = steeringActor->Pos() + 10 / 2.0f * temp;
+	m_Feelers[2] = steeringActor->location() + 10 / 2.0f * temp;
 }
 
 
