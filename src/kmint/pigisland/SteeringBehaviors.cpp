@@ -167,13 +167,14 @@ math::vector2d SteeringBehaviors::WallAvoidance() {
 	for (int flr = 0; flr < m_Feelers.size(); ++flr) { //run through each wall checking for any intersection points
 		for (int w = 0; w < m_Walls.size(); ++w) {
 			math::line_segment vehicleFeelerSegment = math::line_segment(steeringActor->location(), m_Feelers[flr]);
-			if (intersect(vehicleFeelerSegment, m_Walls[w]))
+			auto intersects = intersect(vehicleFeelerSegment, m_Walls[w]);
+			if (intersects)
 			{ //is this the closest found so far? If so keep a record
-				if (DistToThisIP < DistToClosestIP)
+				if (intersects->distance() < DistToClosestIP)
 				{
-					DistToClosestIP = DistToThisIP;
+					DistToClosestIP = intersects->distance();
 					ClosestWall = w;
-					ClosestPoint = point;
+					ClosestPoint = intersects->point();
 				}
 			}
 		}//next wall
@@ -185,7 +186,7 @@ math::vector2d SteeringBehaviors::WallAvoidance() {
 			math::vector2d OverShoot = m_Feelers[flr] - ClosestPoint;
 			//create a force in the direction of the wall normal, with a
 			//magnitude of the overshoot
-			//SteeringForce = m_Walls[ClosestWall].Normal() * OverShoot.Length();
+			//SteeringForce = m_Walls[ClosestWall].Normal() * length(OverShoot);
 		}
 	}//next feeler
 	return SteeringForce;
