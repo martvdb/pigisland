@@ -5,7 +5,11 @@ namespace kmint::pigisland
 {
 pig::pig(math::vector2d location)
   : play::free_roaming_actor{location},
-    drawable_{*this, pig_image()} , Steering{ SteeringBehaviors(this) } {}
+    drawable_{*this, pig_image()} , Steering{ SteeringBehaviors(this) }
+{
+	heading = math::normalize(math::vector2d(random_scalar(-1, 1), random_scalar(-1, 1)));
+	side = perp(heading);
+}
 
 void pig::act(delta_time dt) {
 

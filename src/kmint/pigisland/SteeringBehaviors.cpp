@@ -1,8 +1,9 @@
 #include "..\..\..\include\kmint\pigisland\SteeringBehaviors.hpp"
 #include <random>
+#include "kmint/math/C2DMatrix.hpp"
 using namespace kmint;
 
-SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : _dWanderAmount{ 0.4 }, _dWallAvoidanceAmount{ 9 }
+SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : _dWanderAmount{ 1 }, _dWallAvoidanceAmount{ 2 }
 {
 	this->steeringActor = steeringActor;
 	_dFleeAmount = random_scalar(-1, 1);
@@ -23,23 +24,25 @@ SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : 
 
 math::vector2d SteeringBehaviors::calculate() {
 
-	math::vector2d SteeringForce;
-	SteeringForce += Wander() * _dWanderAmount;
-	if (SeekOn()) { SteeringForce += Flee() * _dFleeAmount; isFleeOn = false; }
-	if (FleeOn()) { SteeringForce += Seek(_chaseTarget) * _dSeekAmount; isSeekOn = false; }
-	SteeringForce += Alignment() * _dAlingmentAmount;
-    SteeringForce += Cohesion() * _dCohesionAmount;
-	SteeringForce += Separation() * _dSeparationAmount;
+	math::vector2d SteeringForce = math::vector2d(0, 0);
 	SteeringForce += WallAvoidance() * _dWallAvoidanceAmount;
+	if(SteeringForce == math::vector2d(0, 0))
+	{
+		SteeringForce += Wander() * _dWanderAmount;
+		if (SeekOn()) { SteeringForce += Flee() * _dFleeAmount; isFleeOn = false; }
+		if (FleeOn()) { SteeringForce += Seek(_chaseTarget) * _dSeekAmount; isSeekOn = false; }
+		SteeringForce += Alignment() * _dAlingmentAmount;
+		SteeringForce += Cohesion() * _dCohesionAmount;
+		SteeringForce += Separation() * _dSeparationAmount;
+	}
+
+	
 	return Truncate(SteeringForce, steeringActor->MaxForce());
 }
 
 math::vector2d SteeringBehaviors::Wander()
 {
-	math::vector2d m_vWanderTarget;
 
-	std::uniform_real_distribution<float> unif(-1, 1);
-	std::default_random_engine re;
 	float r1 = random_scalar(-1, 1);
 	float r2 = random_scalar(-1, 1);
 	m_vWanderTarget += math::vector2d(r1 * m_dWanderJitter,
@@ -49,7 +52,7 @@ math::vector2d SteeringBehaviors::Wander()
 	m_vWanderTarget = math::normalize(m_vWanderTarget);
 	m_vWanderTarget *= m_dWanderRadius;
 	math::vector2d targetLocal = m_vWanderTarget + math::vector2d(m_dWanderDistance, 0);
-	math::vector2d Target = PointToWorldSpace(target,
+	math::vector2d Target = PointToWorldSpace(targetLocal,
 		steeringActor->Heading(),
 		steeringActor->Side(),
 		steeringActor->location());
@@ -111,6 +114,12 @@ math::vector2d SteeringBehaviors::Alignment()
 			AverageHeading += a.heading();
 			++NeighborCount;
 		}
+	}
+	if (NeighborCount > 0)
+	{
+		AverageHeading /= (double)NeighborCount;
+
+		AverageHeading -= steeringActor->Heading();
 	}
 	return AverageHeading;
 }
@@ -209,19 +218,19 @@ math::vector2d SteeringBehaviors::PointToWorldSpace(const math::vector2d point,
 	const math::vector2d AgentPosition)
 {
 	// make a copy of the point
-	Vector2D TransPoint = point;
+	math::vector2d TransPoint = point;
 
 	// create a transformation matrix
-	C2DMatrix matTransform;
+	math::C2DMatrix matTransform;
 
 	// rotate
 	matTransform.Rotate(AgentHeading, AgentSide);
 
 	// and translate
-	matTransform.Translate(AgentPosition.x, AgentPosition.y);
+	matTransform.Translate(AgentPosition.x(), AgentPosition.y());
 
 	// now transform the vertices
-	matTransform.TransformVector2Ds(TransPoint);
+	matTransform.Transformvector2ds(TransPoint);
 
 	return TransPoint;
 }

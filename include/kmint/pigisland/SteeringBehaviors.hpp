@@ -36,12 +36,13 @@ public:
 
 
 private:
+	math::vector2d m_vWanderTarget;
 	// rectangle_drawable drawable_;
-	float m_dWanderRadius = 300;
+	float m_dWanderRadius = 1.2;
 	//This is the radius of the constraining circle.
-	float m_dWanderDistance = 5;
+	float m_dWanderDistance = 2;
 	//This is the distance the wander circle is projected in front of the agent.
-	float m_dWanderJitter = 28;
+	float m_dWanderJitter = 80;
 
 	std::vector<math::vector2d> m_Feelers;
 	std::vector<math::line_segment> m_Walls;
