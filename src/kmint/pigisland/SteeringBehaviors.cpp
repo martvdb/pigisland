@@ -14,7 +14,6 @@ SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : 
 	m_Walls.push_back(math::line_segment(math::vector2d(0, 0), math::vector2d(1024, 0)));
 	m_Walls.push_back(math::line_segment(math::vector2d(0, 768), math::vector2d(1024, 768)));
 	m_Walls.push_back(math::line_segment(math::vector2d(1024, 0), math::vector2d(1024, 768)));
-
 }
 
 math::vector2d SteeringBehaviors::calculate() {
