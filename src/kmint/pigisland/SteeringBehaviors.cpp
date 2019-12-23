@@ -10,7 +10,6 @@ SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : 
 	_dCohesionAmount = random_scalar(0, 1);
 	_dAlingmentAmount = random_scalar(0, 1);
 	_dSeparationAmount = random_scalar(0, 1);
-	m_Feelers(3);
 }
 
 math::vector2d SteeringBehaviors::calculate() {

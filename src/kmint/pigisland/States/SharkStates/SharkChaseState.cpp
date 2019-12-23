@@ -5,7 +5,7 @@
 
 SharkChaseState::SharkChaseState(kmint::pigisland::shark* shark)
 {
-	shark->set_tint(graphics::color(255, 100, 100));
+	shark->set_tint(graphics::color(255, 0, 0));
 }
 
 void SharkChaseState::Execute(pigisland::shark* shark)
