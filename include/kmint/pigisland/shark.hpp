@@ -26,11 +26,12 @@ public:
 	// Belangrijk voor collision detection
 	scalar collision_range() const override { return 32.0; }
 	bool perceptive() const override { return true; }
-	scalar perception_range() const override { return 1000.0f; }
+	scalar perception_range() const override { return 500.0f; }
 	std::string type() const override { return "shark"; }
 	bool perceivable() const override { return true; }
 	void setState(SharkState* state);
 	SharkState* state() { return state_; }
+	void set_tint(graphics::color color) { drawable_.set_tint(color); }
 	int amountOfSteps_ = 0;
 	map::map_graph& graph() { return graph_; }
 private:

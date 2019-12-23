@@ -3,6 +3,11 @@
 #include "kmint/pigisland/States/SharkStates/SharkChaseState.hpp"
 #include "kmint/pigisland/States/SharkStates/SharkRestState.hpp"
 
+SharkWanderState::SharkWanderState(kmint::pigisland::shark* shark)
+{
+	shark->set_tint(graphics::color(255, 255, 255, 255));
+}
+
 void SharkWanderState::Execute(pigisland::shark* shark)
 {
 	int next_index = kmint::random_int(0, shark->node().num_edges());
@@ -10,11 +15,14 @@ void SharkWanderState::Execute(pigisland::shark* shark)
 	shark->amountOfSteps_++;
 	if(shark->amountOfSteps_ >= 100)
 	{
-		shark->setState(new SharkRestState());
+		shark->setState(new SharkRestState(shark));
 		return;
 	}
-	if (shark->num_perceived_actors() > 0)
-	{
-		shark->setState(new SharkChaseState());
+	for (auto i = shark->begin_perceived(); i != shark->end_perceived(); ++i) {
+		if (i->type() == "pig")
+		{
+			shark->setState(new SharkChaseState(shark));
+			return;
+		}
 	}
 }

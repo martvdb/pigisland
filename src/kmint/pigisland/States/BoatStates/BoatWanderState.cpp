@@ -3,6 +3,11 @@
 #include "../../../../../include/kmint/pigisland/States/BoatStates/BoatDockState.hpp"
 #include "../../../../../include/kmint/pigisland/States/BoatStates/BoatWanderState.hpp"
 
+BoatWanderState::BoatWanderState(kmint::pigisland::boat* boat)
+{
+	boat->set_tint(graphics::color(255, 255, 255, 255));
+}
+
 void BoatWanderState::Execute(kmint::pigisland::boat* boat)
 {
 	int next_index = kmint::random_int(0, boat->node().num_edges());

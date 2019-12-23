@@ -5,17 +5,19 @@
 #include "kmint/pigisland/Aster.hpp"
 #include "kmint/pigisland/pig.hpp"
 #include "kmint/pigisland/States/SharkStates/SharkChaseState.hpp"
+#include "kmint/pigisland/States/SharkStates/SharkWanderState.hpp"
 
 namespace kmint::pigisland
 {
   shark::shark(map::map_graph& g, map::map_node& initial_node)
     : play::map_bound_actor{ initial_node },
-	  drawable_{ *this, graphics::image{shark_image()} }, graph_{ g }, state_{new SharkChaseState()} {}
+	  drawable_{ *this, graphics::image{shark_image()} }, graph_{ g }, state_{new SharkWanderState(this)} {}
 
   void shark::setState(SharkState* state)
   {
 	  delete state_;
 	  state_ = state;
+      
   }
 
   void shark::act(delta_time dt) {

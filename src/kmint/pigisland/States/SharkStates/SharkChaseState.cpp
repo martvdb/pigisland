@@ -3,6 +3,11 @@
 #include "kmint/pigisland/States/SharkStates/SharkRestState.hpp"
 
 
+SharkChaseState::SharkChaseState(kmint::pigisland::shark* shark)
+{
+	shark->set_tint(graphics::color(255, 100, 100));
+}
+
 void SharkChaseState::Execute(pigisland::shark* shark)
 {
 	for (auto i = shark->begin_collision(); i != shark->end_collision(); ++i) {
@@ -37,12 +42,12 @@ void SharkChaseState::Execute(pigisland::shark* shark)
 		shark->amountOfSteps_++;
 		if(shark->amountOfSteps_ >= 100)
 		{
-			shark->setState(new SharkRestState());
+			shark->setState(new SharkRestState(shark));
 		}
 	}
 	else
 	{
-		shark->setState(new SharkWanderState());
+		shark->setState(new SharkWanderState(shark));
 		shark->state()->Execute(shark);
 	}
 }

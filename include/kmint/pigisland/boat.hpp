@@ -21,6 +21,7 @@ public:
 	// wordt elke game tick aangeroepen
 	void act(delta_time dt) override;
 	ui::drawable const& drawable() const override { return drawable_; }
+	void set_tint(graphics::color color) { drawable_.set_tint(color); }
 	// als incorporeal false is, doet de actor mee aan collision detection
 	bool incorporeal() const override { return false; }
 	// geeft de lengte van een zijde van de collision box van deze actor terug.

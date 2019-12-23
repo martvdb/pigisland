@@ -11,7 +11,7 @@ namespace pigisland {
 	  docks_.push_back(dock(30, 50, find_node_of_kind(g, '1').node_id()));
 	  docks_.push_back(dock(20, 100, find_node_of_kind(g, '2').node_id()));
 	  docks_.push_back(dock(50, 50, find_node_of_kind(g, '3').node_id()));
-	  state_ = new BoatWanderState();
+	  state_ = new BoatWanderState(this);
   }
 
   void boat::setState(BoatState* state)
