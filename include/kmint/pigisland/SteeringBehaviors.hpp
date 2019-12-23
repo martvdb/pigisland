@@ -19,6 +19,11 @@ public:
 	math::vector2d Cohesion();
 	math::vector2d WallAvoidance();
 
+	math::vector2d PointToWorldSpace(const math::vector2d point,
+		const math::vector2d AgentHeading,
+		const math::vector2d AgentSide,
+		const math::vector2d AgentPosition);
+
 	bool FleeOn() const;
 	bool SeekOn() const;
 
@@ -32,11 +37,11 @@ public:
 
 private:
 	// rectangle_drawable drawable_;
-	float m_dWanderRadius = 35;
+	float m_dWanderRadius = 300;
 	//This is the radius of the constraining circle.
-	float m_dWanderDistance = 5.f;
+	float m_dWanderDistance = 5;
 	//This is the distance the wander circle is projected in front of the agent.
-	float m_dWanderJitter = 28.f;
+	float m_dWanderJitter = 28;
 
 	std::vector<math::vector2d> m_Feelers;
 	std::vector<math::line_segment> m_Walls;

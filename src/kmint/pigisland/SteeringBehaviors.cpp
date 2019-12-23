@@ -2,7 +2,7 @@
 #include <random>
 using namespace kmint;
 
-SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : _dWanderAmount{ 0.5 }, _dWallAvoidanceAmount{ 3 }
+SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : _dWanderAmount{ 0.4 }, _dWallAvoidanceAmount{ 9 }
 {
 	this->steeringActor = steeringActor;
 	_dFleeAmount = random_scalar(-1, 1);
@@ -10,9 +10,14 @@ SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : 
 	_dCohesionAmount = random_scalar(0, 1);
 	_dAlingmentAmount = random_scalar(0, 1);
 	_dSeparationAmount = random_scalar(0, 1);
-	m_Walls.push_back(math::line_segment(math::vector2d(0, 0), math::vector2d(0, 768)));
+	m_Walls.push_back(math::line_segment(math::vector2d(0, 768), math::vector2d(0, 0)));
 	m_Walls.push_back(math::line_segment(math::vector2d(0, 0), math::vector2d(1024, 0)));
-	m_Walls.push_back(math::line_segment(math::vector2d(0, 768), math::vector2d(1024, 768)));
+	m_Walls.push_back(math::line_segment(math::vector2d(0, 128), math::vector2d(320, 128)));
+	m_Walls.push_back(math::line_segment(math::vector2d(256, 544), math::vector2d(0, 544)));
+	m_Walls.push_back(math::line_segment(math::vector2d(768, 544), math::vector2d(768, 768)));
+	m_Walls.push_back(math::line_segment(math::vector2d(1024, 544), math::vector2d(768, 544)));
+	m_Walls.push_back(math::line_segment(math::vector2d(256, 768), math::vector2d(256, 544)));
+	m_Walls.push_back(math::line_segment(math::vector2d(1024, 768), math::vector2d(0, 768)));
 	m_Walls.push_back(math::line_segment(math::vector2d(1024, 0), math::vector2d(1024, 768)));
 }
 
@@ -23,10 +28,10 @@ math::vector2d SteeringBehaviors::calculate() {
 	if (SeekOn()) { SteeringForce += Flee() * _dFleeAmount; isFleeOn = false; }
 	if (FleeOn()) { SteeringForce += Seek(_chaseTarget) * _dSeekAmount; isSeekOn = false; }
 	SteeringForce += Alignment() * _dAlingmentAmount;
-	SteeringForce += Cohesion() * _dCohesionAmount;
+    SteeringForce += Cohesion() * _dCohesionAmount;
 	SteeringForce += Separation() * _dSeparationAmount;
 	SteeringForce += WallAvoidance() * _dWallAvoidanceAmount;
-	return Truncate(SteeringForce, 15);
+	return Truncate(SteeringForce, steeringActor->MaxForce());
 }
 
 math::vector2d SteeringBehaviors::Wander()
@@ -35,8 +40,8 @@ math::vector2d SteeringBehaviors::Wander()
 
 	std::uniform_real_distribution<float> unif(-1, 1);
 	std::default_random_engine re;
-	float r1 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX / 2) - 1;
-	float r2 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX / 2) - 1;
+	float r1 = random_scalar(-1, 1);
+	float r2 = random_scalar(-1, 1);
 	m_vWanderTarget += math::vector2d(r1 * m_dWanderJitter,
 		r2 * m_dWanderJitter);
 
@@ -44,7 +49,13 @@ math::vector2d SteeringBehaviors::Wander()
 	m_vWanderTarget = math::normalize(m_vWanderTarget);
 	m_vWanderTarget *= m_dWanderRadius;
 	math::vector2d targetLocal = m_vWanderTarget + math::vector2d(m_dWanderDistance, 0);
-	return targetLocal;
+	math::vector2d Target = PointToWorldSpace(target,
+		steeringActor->Heading(),
+		steeringActor->Side(),
+		steeringActor->location());
+
+	//and steer towards it
+	return Target - steeringActor->location();
 }
 
 math::vector2d SteeringBehaviors::Seek(math::vector2d target)
@@ -186,10 +197,33 @@ math::vector2d SteeringBehaviors::WallAvoidance() {
 			math::vector2d OverShoot = m_Feelers[flr] - ClosestPoint;
 			//create a force in the direction of the wall normal, with a
 			//magnitude of the overshoot
-			//SteeringForce = m_Walls[ClosestWall].Normal() * length(OverShoot);
+			SteeringForce = perp(normalize(m_Walls[ClosestWall].end - m_Walls[ClosestWall].begin)) * length(OverShoot);
 		}
 	}//next feeler
 	return SteeringForce;
+}
+
+math::vector2d SteeringBehaviors::PointToWorldSpace(const math::vector2d point,
+	const math::vector2d AgentHeading,
+	const math::vector2d AgentSide,
+	const math::vector2d AgentPosition)
+{
+	// make a copy of the point
+	Vector2D TransPoint = point;
+
+	// create a transformation matrix
+	C2DMatrix matTransform;
+
+	// rotate
+	matTransform.Rotate(AgentHeading, AgentSide);
+
+	// and translate
+	matTransform.Translate(AgentPosition.x, AgentPosition.y);
+
+	// now transform the vertices
+	matTransform.TransformVector2Ds(TransPoint);
+
+	return TransPoint;
 }
 
 
