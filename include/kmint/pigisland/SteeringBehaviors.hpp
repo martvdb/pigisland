@@ -1,5 +1,7 @@
 #pragma once
 #include "kmint/math/vector2d.hpp" // voor window en app
+#include "kmint/math/line_segment.hpp"
+#include "kmint/math/intersection.hpp"
 #include "kmint/play.hpp"
 #include "kmint/play/free_roaming_actor.hpp"
 #include  "kmint/random.hpp"
@@ -15,6 +17,7 @@ public:
 	math::vector2d Separation();
 	math::vector2d Alignment();
 	math::vector2d Cohesion();
+	math::vector2d WallAvoidance();
 
 	bool FleeOn() const;
 	bool SeekOn() const;
@@ -29,13 +32,14 @@ public:
 
 private:
 	// rectangle_drawable drawable_;
-	float m_dWanderRadius = 5;
+	float m_dWanderRadius = 35;
 	//This is the radius of the constraining circle.
-	float m_dWanderDistance = 3.f;
+	float m_dWanderDistance = 5.f;
 	//This is the distance the wander circle is projected in front of the agent.
 	float m_dWanderJitter = 28.f;
 
 	std::vector<math::vector2d> m_Feelers;
+	std::vector<math::line_segment> m_Walls;
 
 	math::vector2d _fleeTarget{};
 	math::vector2d _chaseTarget{};

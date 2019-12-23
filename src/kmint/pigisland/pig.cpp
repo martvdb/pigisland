@@ -19,7 +19,7 @@ void pig::act(delta_time dt) {
 			Steering.setFlee(true, i->location());
 		}
 	}
-	
+
 
 	steer_force = Steering.calculate();
 	

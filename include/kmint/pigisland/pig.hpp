@@ -13,7 +13,7 @@ public:
   pig(math::vector2d location);
   const ui::drawable &drawable() const override { return drawable_; }
   bool perceptive() const override { return true; }
-  scalar perception_range() const override { return 200.0f; }
+  scalar perception_range() const override { return 150.0f; }
   bool perceivable() const override { return true; }
   bool incorporeal() const override { return false; }
   std::string type() const override { return "pig"; }
