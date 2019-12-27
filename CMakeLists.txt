@@ -24,6 +24,7 @@ add_executable(pigisland
   src/kmint/pigisland/States/SharkStates/SharkChaseState.cpp
   src/kmint/pigisland/States/SharkStates/SharkWanderState.cpp
   src/kmint/pigisland/States/SharkStates/SharkRestState.cpp
+  src/kmint/pigisland/States/SharkStates/SharkFleeState.cpp
   src/kmint/pigisland/States/BoatStates/BoatDockState.cpp
   src/kmint/pigisland/States/BoatStates/BoatWanderState.cpp)
 

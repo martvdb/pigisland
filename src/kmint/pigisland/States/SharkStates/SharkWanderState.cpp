@@ -2,6 +2,7 @@
 #include "../../../../../../libkmint/include/kmint/random.hpp"
 #include "kmint/pigisland/States/SharkStates/SharkChaseState.hpp"
 #include "kmint/pigisland/States/SharkStates/SharkRestState.hpp"
+#include "kmint/pigisland/States/SharkStates/SharkFleeState.hpp"
 
 SharkWanderState::SharkWanderState(kmint::pigisland::shark* shark)
 {
@@ -19,10 +20,20 @@ void SharkWanderState::Execute(pigisland::shark* shark)
 		return;
 	}
 	for (auto i = shark->begin_perceived(); i != shark->end_perceived(); ++i) {
+		if (i->type() == "boat")
+		{
+			if (distance(i->location(), shark->location()) <= 50)
+			{
+				shark->setState(new SharkFleeState(shark));
+				return;
+			}
+
+		}
 		if (i->type() == "pig")
 		{
 			shark->setState(new SharkChaseState(shark));
 			return;
 		}
+
 	}
 }

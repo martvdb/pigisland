@@ -1,6 +1,7 @@
 #include "kmint/pigisland/States/SharkStates/SharkChaseState.hpp"
 #include "kmint/pigisland/States/SharkStates/SharkWanderState.hpp"
 #include "kmint/pigisland/States/SharkStates/SharkRestState.hpp"
+#include "kmint/pigisland/States/SharkStates/SharkFleeState.hpp"
 
 
 SharkChaseState::SharkChaseState(kmint::pigisland::shark* shark)
@@ -18,6 +19,15 @@ void SharkChaseState::Execute(pigisland::shark* shark)
 	float dist = 10000.0f;
 	kmint::math::vector2d loc = kmint::math::vector2d();
 	for (auto i = shark->begin_perceived(); i != shark->end_perceived(); ++i) {
+		if (i->type() == "boat")
+		{
+			if (distance(i->location(), shark->location()) <= 50)
+			{
+				shark->setState(new SharkFleeState(shark));
+				return;
+			}
+
+		}
 		if (i->type() == "pig")
 		{
 			const map::map_node& node = pigisland::find_closest_node_to(shark->graph(), i->location());
