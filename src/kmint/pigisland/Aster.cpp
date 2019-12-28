@@ -44,8 +44,8 @@ int calculateRoute(size_t start_id , size_t target_id, kmint::map::map_graph &g)
 			int nodeDistance = calculateDistance(targetLocation.x(), nodeLocation.x()) + calculateDistance(targetLocation.y(), nodeLocation.y());
 			kmint::math::basic_vector2d<float> toLocation = to.location();
 
-			double distance = (calculateDistance(targetLocation.x(), toLocation.x()) + calculateDistance(targetLocation.y(), toLocation.y())) / 1000;
-			
+			double distance = (calculateDistance(targetLocation.x(), toLocation.x()) + calculateDistance(targetLocation.y(), toLocation.y())) / 33;
+
 			std::vector<int> nodes;
 			std::transform(queue.begin(), queue.end(),
 				std::back_inserter(nodes),
@@ -57,7 +57,7 @@ int calculateRoute(size_t start_id , size_t target_id, kmint::map::map_graph &g)
 					predecessors[to.node_id()] = nodeid;
 				if(std::find(nodes.begin(), nodes.end(), to.node_id()) == nodes.end())
 				{
-					queue.emplace_back(std::make_pair(to.node_id(), distance));
+					queue.emplace_back(std::make_pair(to.node_id(), costs[to.node_id()] + distance));
 				}
 			}
 		}
