@@ -13,7 +13,7 @@ int calculateRoute(size_t start_id , size_t target_id, kmint::map::map_graph &g)
 	auto& graph = g;
 	auto& target = graph[target_id];
 	auto& start = graph[start_id];
-	std::deque<std::pair<int, int>> queue;
+	std::deque<std::pair<int, double>> queue;
 	std::deque<size_t> visited;
 	std::map<size_t, int> costs;
 	std::map<size_t, size_t> predecessors;
@@ -31,7 +31,11 @@ int calculateRoute(size_t start_id , size_t target_id, kmint::map::map_graph &g)
 		queue.pop_front();
 		visited.push_front(nodeid);
 		auto& node = graph[nodeid];
-
+		if(node.node_id() == target_id)
+		{
+			queue.clear();
+			break;
+		}
 		for (std::size_t i = 0; i < node.num_edges(); ++i) {
 			//calculate distance
 			auto& to = node[i].to();
@@ -39,28 +43,23 @@ int calculateRoute(size_t start_id , size_t target_id, kmint::map::map_graph &g)
 			kmint::math::basic_vector2d<float> nodeLocation = node.location();
 			int nodeDistance = calculateDistance(targetLocation.x(), nodeLocation.x()) + calculateDistance(targetLocation.y(), nodeLocation.y());
 			kmint::math::basic_vector2d<float> toLocation = to.location();
-			
 
-			int distance = calculateDistance(targetLocation.x(), toLocation.x()) + calculateDistance(targetLocation.y(), toLocation.y());
+			int distance = calculateDistance(targetLocation.x(), toLocation.x()) + calculateDistance(targetLocation.y(), toLocation.y()) / 1000;
 			
 			std::vector<int> nodes;
 			std::transform(queue.begin(), queue.end(),
 				std::back_inserter(nodes),
 				[](auto const& pair) { return pair.first; });
-			if (distance < nodeDistance && (std::find(visited.begin(), visited.end(), to.node_id()) == visited.end() || costs[to.node_id()] > costs[nodeid] + node[i].weight())) {
-				
+			
+			if (costs[to.node_id()] > costs[nodeid] + node[i].weight()) {
+				graph[node.node_id()].tag(kmint::graph::node_tag::visited);
+					costs[to.node_id()] = costs[nodeid] + node[i].weight();
+					predecessors[to.node_id()] = nodeid;
 				if(std::find(nodes.begin(), nodes.end(), to.node_id()) == nodes.end())
 				{
 					queue.emplace_back(std::make_pair(to.node_id(), distance));
 				}
-				
 			}
-			graph[node.node_id()].tag(kmint::graph::node_tag::visited);
-			if (costs[to.node_id()] >= costs[nodeid] + node[i].weight()) {
-				costs[to.node_id()] = costs[nodeid] + node[i].weight();
-				predecessors[to.node_id()] = nodeid;
-			}
-
 		}
 		sort(queue.begin(), queue.end(), sortbysec);
 

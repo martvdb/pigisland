@@ -14,7 +14,7 @@ void SharkWanderState::Execute(pigisland::shark* shark)
 	int next_index = kmint::random_int(0, shark->node().num_edges());
 	shark->node(shark->node()[next_index].to());
 	shark->amountOfSteps_++;
-	if(shark->amountOfSteps_ >= 100)
+	if(shark->amountOfSteps_ >= 1)
 	{
 		shark->setState(new SharkRestState(shark));
 		return;
