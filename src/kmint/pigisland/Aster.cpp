@@ -3,8 +3,8 @@
 #include <map>
 #include <algorithm>
 #include <kmint\pigisland\resources.hpp>
-bool sortbysec(const std::pair<int, int>& a,
-	const std::pair<int, int>& b)
+bool sortbysec(const std::pair<int, double>& a,
+	const std::pair<int, double>& b)
 {
 	return (a.second < b.second);
 }
@@ -44,7 +44,7 @@ int calculateRoute(size_t start_id , size_t target_id, kmint::map::map_graph &g)
 			int nodeDistance = calculateDistance(targetLocation.x(), nodeLocation.x()) + calculateDistance(targetLocation.y(), nodeLocation.y());
 			kmint::math::basic_vector2d<float> toLocation = to.location();
 
-			int distance = calculateDistance(targetLocation.x(), toLocation.x()) + calculateDistance(targetLocation.y(), toLocation.y()) / 1000;
+			double distance = (calculateDistance(targetLocation.x(), toLocation.x()) + calculateDistance(targetLocation.y(), toLocation.y())) / 1000;
 			
 			std::vector<int> nodes;
 			std::transform(queue.begin(), queue.end(),
