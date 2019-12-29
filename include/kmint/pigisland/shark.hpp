@@ -26,7 +26,7 @@ public:
 	// Belangrijk voor collision detection
 	scalar collision_range() const override { return 32.0; }
 	bool perceptive() const override { return true; }
-	scalar perception_range() const override { return 500.0f; }
+	scalar perception_range() const override { return 100.0f; }
 	std::string type() const override { return "shark"; }
 	bool perceivable() const override { return true; }
 	void setState(SharkState* state);
