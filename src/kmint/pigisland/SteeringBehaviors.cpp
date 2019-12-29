@@ -1,6 +1,6 @@
 #include "..\..\..\include\kmint\pigisland\SteeringBehaviors.hpp"
 #include <random>
-#include "kmint/math/C2DMatrix.hpp"
+#include "kmint/math//matrix2d.hpp"
 using namespace kmint;
 
 SteeringBehaviors::SteeringBehaviors(play::free_roaming_actor* steeringActor) : _dWanderAmount{ 1 }, _dWallAvoidanceAmount{ 2 }
@@ -221,7 +221,7 @@ math::vector2d SteeringBehaviors::PointToWorldSpace(const math::vector2d point,
 	math::vector2d TransPoint = point;
 
 	// create a transformation matrix
-	math::C2DMatrix matTransform;
+	math::matrix2d matTransform;
 
 	// rotate
 	matTransform.Rotate(AgentHeading, AgentSide);
