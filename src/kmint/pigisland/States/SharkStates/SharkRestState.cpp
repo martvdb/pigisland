@@ -15,6 +15,7 @@ void SharkRestState::Execute(pigisland::shark* shark)
 		shark->node(shark->node()[next_index].to());
 
 		if (shark->node().node_id() == pigisland::find_shark_resting_place(shark->graph()).node_id()) {
+			shark->amountOfSteps_ = 0;
 			shark->setState(new SharkWanderState(shark));
 		}
 }
