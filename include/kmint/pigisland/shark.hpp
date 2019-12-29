@@ -16,7 +16,7 @@ namespace pigisland {
 
 class shark : public play::map_bound_actor {
 public:
-	shark(map::map_graph& g, map::map_node& initial_node);
+	shark(map::map_graph& g, play::stage& stage, map::map_node& initial_node);
 	// wordt elke game tick aangeroepen
 	void act(delta_time dt) override;
 	ui::drawable const& drawable() const override { return drawable_; }
@@ -33,10 +33,11 @@ public:
 	SharkState* state() { return state_; }
 	void set_tint(graphics::color color) { drawable_.set_tint(color); }
 	int amountOfSteps_ = 0;
+	play::stage& stage() { return stage_; }
 	map::map_graph& graph() { return graph_; }
 private:
 	SharkState* state_;
-	
+	play::stage &stage_;
 	// hoeveel tijd is verstreken sinds de laatste beweging
 	delta_time t_passed_{};
 	// weet hoe de koe getekend moet worden

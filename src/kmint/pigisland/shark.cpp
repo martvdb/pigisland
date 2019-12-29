@@ -9,9 +9,9 @@
 
 namespace kmint::pigisland
 {
-  shark::shark(map::map_graph& g, map::map_node& initial_node)
+  shark::shark(map::map_graph& g, play::stage& stage, map::map_node& initial_node)
     : play::map_bound_actor{ initial_node },
-	  drawable_{ *this, graphics::image{shark_image()} }, graph_{ g }, state_{new SharkWanderState(this)} {}
+      drawable_{ *this, graphics::image{shark_image()} }, graph_{ g }, stage_{ stage }, state_{ new SharkWanderState(this) } {}
 
   void shark::setState(SharkState* state)
   {

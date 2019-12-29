@@ -16,6 +16,12 @@ void SharkRestState::Execute(pigisland::shark* shark)
 
 		if (shark->node().node_id() == pigisland::find_shark_resting_place(shark->graph()).node_id()) {
 			shark->amountOfSteps_ = 0;
+
+			auto locs = pigisland::random_pig_locations(100);
+			for (auto loc : locs) {
+				shark->stage().build_actor<pigisland::pig>(loc);
+			}
+			
 			shark->setState(new SharkWanderState(shark));
 		}
 }
